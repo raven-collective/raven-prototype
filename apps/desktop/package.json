@@ -10,9 +10,15 @@
     "build": "tsc && vite build",
     "test": "bun test",
     "preview": "vite preview",
-    "tauri": "bun ./scripts/tauri.ts"
+    "tauri": "bun ./scripts/tauri.ts",
+    "mobile:dev": "vite --config mobile/vite.config.ts",
+    "mobile:build": "tsc -p mobile && vite build --config mobile/vite.config.ts",
+    "mobile:android": "bun run mobile:build && cap sync android && cd mobile/android && ./gradlew assemble"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/core": "^8.6.0",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
@@ -27,6 +33,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "emojibase-data": "18.0.0",
+    "livekit-client": "^2.23.0",
     "lottie-web": "5.12.2",
     "lucide-react": "^0.511.0",
     "react": "^19.1.0",
@@ -36,6 +43,7 @@
     "thumbhash": "^0.1.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.6.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tauri-apps/cli": "^2.5.0",
     "@types/react": "^19.1.6",

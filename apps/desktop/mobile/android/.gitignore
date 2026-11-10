@@ -1,0 +1,11 @@
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+# Written by `cap sync`, which `bun run mobile:android` runs first.
+capacitor-cordova-android-plugins/
+capacitor.settings.gradle
+app/capacitor.build.gradle
+app/src/main/assets/
+app/src/main/res/xml/config.xml

@@ -12,6 +12,7 @@ export function CallScreen({ nestId, data, onBack }: { nestId: string; data: Rav
   const [phase, setPhase] = useState<Phase>({ kind: "joining" });
   const [videos, setVideos] = useState<RemoteVideo[]>([]);
   const [muted, setMuted] = useState(false);
+  const [audioBlocked, setAudioBlocked] = useState(false);
   // Rejoin starts the effect again.
   const [attempt, setAttempt] = useState(0);
 
@@ -24,6 +25,7 @@ export function CallScreen({ nestId, data, onBack }: { nestId: string; data: Rav
     setPhase({ kind: "joining" });
     setVideos([]);
     setMuted(false);
+    setAudioBlocked(false);
     const joined = (async () => {
       await previousLeft.current;
       try {
@@ -39,6 +41,7 @@ export function CallScreen({ nestId, data, onBack }: { nestId: string; data: Rav
           rtcServerUrl: data.serverProperties.rtcServerUrl,
           presence: data.presence,
           onVideos: (next) => live && setVideos(next),
+          onAudioBlocked: (blocked) => live && setAudioBlocked(blocked),
           onDropped: () => live && setPhase({ kind: "disconnected", reason: "Disconnected" }),
         });
         if (live) setPhase({ kind: "connected", call });
@@ -76,7 +79,10 @@ export function CallScreen({ nestId, data, onBack }: { nestId: string; data: Rav
           </div>
         ) : null}
       </div>
-      <div className="flex shrink-0 justify-center gap-3 border-t border-border/70 p-4">
+      <div className="flex shrink-0 flex-wrap justify-center gap-3 border-t border-border/70 p-4">
+        {phase.kind === "connected" && audioBlocked ? (
+          <Button size="lg" className="w-full" onClick={() => void phase.call.startAudio()}>Tap to hear the call</Button>
+        ) : null}
         <Button size="lg" variant="secondary" disabled={phase.kind !== "connected"} onClick={toggleMute}>
           {muted ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
           {muted ? "Unmute" : "Mute"}

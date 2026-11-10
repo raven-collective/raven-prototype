@@ -16,6 +16,8 @@ export default defineConfig((env) =>
     define: { "import.meta.env.VITE_RAVEN_API_URL": JSON.stringify(apiUrl) },
     root: __dirname,
     publicDir: false,
+    // Relative paths, so the same build works in the Android app and under /app/ on the web.
+    base: "./",
     resolve: { alias: [{ find: /^@tauri-apps\/.*$/, replacement: path.resolve(__dirname, "src/tauriStub.ts") }] },
     css: { postcss: { plugins: [tailwindcss({ ...desktopTailwind, content: [path.resolve(__dirname, "index.html"), path.resolve(__dirname, "src/**/*.tsx"), path.resolve(__dirname, "../src/**/*.{ts,tsx}")] }), autoprefixer()] } },
     build: { outDir: "dist", emptyOutDir: true },

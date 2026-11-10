@@ -39,6 +39,8 @@ export interface RemoteVideo {
 
 export interface Call {
   setMuted: (muted: boolean) => Promise<void>;
+  /** Starts blocked call audio; it must be called from a tap. */
+  startAudio: () => Promise<void>;
   leave: () => Promise<void>;
 }
 
@@ -49,11 +51,13 @@ export interface CallOptions {
   rtcServerUrl?: string;
   presence: UserPresence | null;
   onVideos: (videos: RemoteVideo[]) => void;
+  /** The browser refuses to play call audio until a tap (Safari), or lets it play again. */
+  onAudioBlocked: (blocked: boolean) => void;
   /** The call ended without `leave`: the room dropped, or the server timed us out. */
   onDropped: () => void;
 }
 
-export async function joinCall({ nestId, userId, rtcServerUrl, presence, onVideos, onDropped }: CallOptions): Promise<Call> {
+export async function joinCall({ nestId, userId, rtcServerUrl, presence, onVideos, onAudioBlocked, onDropped }: CallOptions): Promise<Call> {
   const room = new Room({ adaptiveStream: true });
   const videos = new Map<string, RemoteVideo>();
   const audio = new Map<string, HTMLMediaElement>();
@@ -75,6 +79,7 @@ export async function joinCall({ nestId, userId, rtcServerUrl, presence, onVideo
     videos.set(key, { key, userId: stripSidecarIdentity(participant.identity), source: publication.source === Track.Source.ScreenShare ? "screen" : "camera", track: track as RemoteVideoTrack });
     onVideos([...videos.values()]);
   });
+  room.on(RoomEvent.AudioPlaybackStatusChanged, () => onAudioBlocked(!room.canPlaybackAudio));
   room.on(RoomEvent.TrackUnsubscribed, (track: RemoteTrack, publication: RemoteTrackPublication, participant: RemoteParticipant) => {
     const key = `${participant.identity}/${publication.trackSid}`;
     track.detach();
@@ -143,6 +148,7 @@ export async function joinCall({ nestId, userId, rtcServerUrl, presence, onVideo
     setMuted: async (muted) => {
       await (muted ? mic?.mute() : mic?.unmute());
     },
+    startAudio: () => room.startAudio(),
     leave: end,
   };
 }

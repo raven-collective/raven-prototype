@@ -72,6 +72,23 @@ The files are served at `https://updates.rvn.bluehour.cloud`.
 A fresh install signs in to `https://mimir.rvn.bluehour.cloud` by default; `-ApiUrl` on
 `build` changes that.
 
+## Web app
+
+The phone app also runs in a browser, for iPhones: `https://updates.rvn.bluehour.cloud/app/`.
+In Safari, Share → Add to Home Screen gives it an icon and a full screen. Calls end when
+the phone locks or the app is in the background; chat is not affected. It is uploaded by
+hand, not by `release.ps1`:
+
+```powershell
+cd apps\desktop; bun run mobile:build
+ssh raven "rm -rf /srv/raven/releases/app.new"
+scp -r mobile\dist raven:/srv/raven/releases/app.new
+ssh raven "cd /srv/raven/releases && rm -rf app.old && { [ ! -d app ] || mv app app.old; } && mv app.new app"
+```
+
+The releases container never caches `/app/` itself (`releases-nginx.conf`), and the API
+allows the page's origin (`RAVEN_CORS_ALLOWED_ORIGINS` in `compose.yaml`).
+
 ## Server images
 
 People who host their own Raven server run it from Docker Hub images

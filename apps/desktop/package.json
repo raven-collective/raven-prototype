@@ -13,7 +13,7 @@
     "tauri": "bun ./scripts/tauri.ts",
     "mobile:dev": "vite --config mobile/vite.config.ts",
     "mobile:build": "tsc -p mobile && vite build --config mobile/vite.config.ts",
-    "mobile:android": "bun run mobile:build && cap sync android && cd mobile/android && ./gradlew assemble"
+    "mobile:android": "bun run mobile:build && tar -xzf node_modules/@capacitor/cli/assets/android-template.tar.gz -C mobile/android gradlew gradlew.bat gradle/wrapper/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.properties settings.gradle gradle.properties && cap sync android && cd mobile/android && ./gradlew assemble"
   },
   "dependencies": {
     "@capacitor/android": "^8.6.0",

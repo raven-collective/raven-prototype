@@ -33,7 +33,7 @@ imports desktop's `src/` directly and uses desktop's `package.json` and `node_mo
 | File | Purpose |
 |---|---|
 | `index.html`, `vite.config.ts`, `tsconfig.json` | Config. `@` → `../src`, the `@tauri-apps/*` alias to the stub, desktop's Tailwind theme scanning `../src` too. The default server is `https://mimir.rvn.bluehour.cloud` unless `VITE_RAVEN_API_URL` names another. |
-| `android/` | Capacitor project, only what it uses: Capacitor's own activity, theme and layout, and desktop's `icon.png` taken at build time. Its `capacitor.config.ts` sits in `apps/desktop/`, because the Capacitor CLI only runs beside `package.json`. |
+| `android/` | Capacitor project, only what differs from Capacitor's template: the manifest and two `build.gradle` files. `mobile:android` unpacks the rest (Gradle wrapper, settings) from the template in `node_modules`. It uses Capacitor's own activity, theme and layout, and desktop's `icon.png` taken at build time. Its `capacitor.config.ts` sits in `apps/desktop/`, because the Capacitor CLI only runs beside `package.json`. |
 | `src/App.tsx` | Entry: styles, fonts, theme; desktop's `useRavenShellData`, `useChat` and sign-in screens; the screen stack. |
 | `src/tauriStub.ts` | The stub. |
 | `src/Lists.tsx` | Home (Trees, Messages), a Tree's Nests, and the header the screens share. |
